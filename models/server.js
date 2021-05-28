@@ -15,14 +15,14 @@ class Server{
             login : '/login',
         }
 
-        //Routes
-        this.routes()
+        //Connect to db
+        this.dbConnect();
 
         //Middlewares
         this.middlewares();
-    
-        //Connect to db
-        this.dbConnect();
+
+        //Routes
+        this.routes()
         
     }
 
@@ -35,7 +35,7 @@ class Server{
 
         // Read and parse the body      
         this.app.use( express.json() );
-
+   
         // Public folder
         this.app.use( express.static('public') );
 
