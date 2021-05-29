@@ -6,16 +6,13 @@ const login = async(req, res) => {
 
     const body = req.body;
 
-    //const user = new User(body)
+    const user = new User(body)
 
-    //await user.save(body)
+    await user.save(body)
 
     res.json({
-        body
+        msg : "User successfully saved"
     })
-
-    console.log(body);
-
 
 }
 
