@@ -1,26 +1,51 @@
 const generateJwt = require('../helpers/generate-jwt');
+const { googleVerify } = require('../helpers/google-verify');
 const User = require('../models/users')
 
 
 
 const login = async(req, res) => {
+    
+    let {id_token} = req.body;
+    
+    try {
 
-    /*const body = req.body;
+        //Receiving the token from the frontend, that google api send to find user data
+        const {name,email} = await googleVerify(id_token)
 
-    const user = new User(body)
+        let user = await User.findOne({email})
+        
+        if (!user) {
+            
+            const data = {
+                name,
+                email,
+                password: ':)'
+            }
 
-    await user.save(body)
+            let user = new User(data)
+            await user.save()
+        }
 
-    res.json({
-        msg : "User successfully saved"
-    })*/
+        if (!user.state) {
+            res.status(404).json({
+                msg: 'User blocked'
+            })
+        }
 
-    const jwt = await generateJwt(13)    
 
-    res.json({
-        msg: 'OK',
-        jwt
-    })
+        const jwt = await generateJwt(user._id)    
+
+        res.json({
+            msg: 'OK',
+            jwt
+        })
+        
+    } catch (error) {
+        res.status(400).json({
+            msg: 'No google token valid'
+        })
+    }
 
 }
 
